@@ -93,9 +93,13 @@
 
 - add missing newline at end of file ([1665047](https://github.com///commit/166504731f0f19fc1b2f9a4d6bcd1319f0da9651))
 
+### Chore
+
+- delete unnecessary modules ([8a260e6](https://github.com///commit/8a260e6aac2629395e043d83193e035d750764a2))
+
 ### Docs
 
-- update CHANGELOG.md with recent additions ([773088c](https://github.com///commit/773088c0b79ec1bee371206d726e6533e5f74da0))
+- update CHANGELOG.md with recent additions ([72e4857](https://github.com///commit/72e48571738298317e1a265cbb9a095186e3e123))
 - add section for code refactoring in CHANGELOG.md ([7f37e65](https://github.com///commit/7f37e6556c2b9e1b9c785ed9f7f793677589500d))
 - update CHANGELOG.md with recent feature additions ([48d3f03](https://github.com///commit/48d3f03b0a7df5ca8699c04d48e7dc8951c56937))
 - update CHANGELOG.md with recent feature additions and documentation updates ([a24736a](https://github.com///commit/a24736a58e1b11cd328571642795cb1a6b49107d))

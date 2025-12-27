@@ -5,6 +5,8 @@
 
 ### Features
 
+- add sqlite3.db ([e3ebaa6](https://github.com///commit/e3ebaa6ca63e26d20b1e54716c13068e03afbedb))
+- add cmn.txt ([0b66474](https://github.com///commit/0b66474b3539412c11e10e419d938619381a8d96))
 - add unet_focal.py module for Focal Loss implementation ([89de91f](https://github.com///commit/89de91f1eb4a6f7a2137a57b4ecb77f9a413a874))
 - add unet_edge.py module for edge-aware loss function ([cfcacd5](https://github.com///commit/cfcacd5fc30d4c73a181068df9336fd81ce739de))
 - add unet_dnf.py module for combined Dice, BCE, and Focal loss ([a84cf14](https://github.com///commit/a84cf140cab17f3b1f9c7eae941938581f442c7a))
@@ -93,6 +95,7 @@
 
 ### Docs
 
+- add section for code refactoring in CHANGELOG.md ([7f37e65](https://github.com///commit/7f37e6556c2b9e1b9c785ed9f7f793677589500d))
 - update CHANGELOG.md with recent feature additions ([48d3f03](https://github.com///commit/48d3f03b0a7df5ca8699c04d48e7dc8951c56937))
 - update CHANGELOG.md with recent feature additions and documentation updates ([a24736a](https://github.com///commit/a24736a58e1b11cd328571642795cb1a6b49107d))
 - add initial CHANGELOG.md with version 0.1.0 details ([b7e1437](https://github.com///commit/b7e14372f5e49d751527dea08c5cbbee5d97db56))
@@ -101,5 +104,6 @@
 
 ### Code Refactoring
 
+- remove unused imports from preprocessor.py ([a3c3661](https://github.com///commit/a3c366148ca6fb3a1196d3dfe3981f8133357039))
 - remove unused model paths from cfg_base.py ([cca40a4](https://github.com///commit/cca40a4121f0bc1e50281c2458030a95c3dbf514))
 

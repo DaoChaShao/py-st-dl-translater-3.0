@@ -1,0 +1,8 @@
+[project]
+name = "py-st-dl-translater-3-0"
+version = "0.1.0"
+description = "Add your description here"
+authors = [{ name = "Shawn Yu" }]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []

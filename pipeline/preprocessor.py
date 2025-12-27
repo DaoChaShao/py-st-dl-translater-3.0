@@ -6,7 +6,6 @@
 # @File     :   preprocessor.py
 # @Desc     :   
 
-from numpy import array, ndarray
 from pandas import DataFrame, read_csv
 from pprint import pprint
 from pathlib import Path
@@ -15,7 +14,6 @@ from random import randint
 from src.configs.cfg_base import CONFIG
 from src.utils.helper import Timer
 from src.utils.SQL import SQLiteIII
-from src.utils.stats import save_json
 
 
 def preprocess_data() -> None:

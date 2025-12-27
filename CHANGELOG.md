@@ -93,9 +93,13 @@
 
 ### Docs
 
-- update CHANGELOG.md with recent feature additions ([2bd95f7](https://github.com///commit/2bd95f7ae293693e2ba8b74f5928acec67c6baaa))
+- update CHANGELOG.md with recent feature additions ([48d3f03](https://github.com///commit/48d3f03b0a7df5ca8699c04d48e7dc8951c56937))
 - update CHANGELOG.md with recent feature additions and documentation updates ([a24736a](https://github.com///commit/a24736a58e1b11cd328571642795cb1a6b49107d))
 - add initial CHANGELOG.md with version 0.1.0 details ([b7e1437](https://github.com///commit/b7e14372f5e49d751527dea08c5cbbee5d97db56))
 - add Chinese README with project overview, quick start guide, and privacy statement ([07dcee2](https://github.com///commit/07dcee239733713682269e51d58da67c65165030))
 - add comprehensive project documentation and quick start guide ([56d4fbb](https://github.com///commit/56d4fbbe67134c7d839328be8055e1bf49f3176b))
+
+### Code Refactoring
+
+- remove unused model paths from cfg_base.py ([cca40a4](https://github.com///commit/cca40a4121f0bc1e50281c2458030a95c3dbf514))
 

@@ -5,6 +5,9 @@
 
 ### Features
 
+- add trainer script for Seq2Seq model training and evaluation ([39d2801](https://github.com///commit/39d280168f15fc65570606724dcf01fbbd8ac8b9))
+- add predictor script for next word prediction and evaluation ([23b0ba8](https://github.com///commit/23b0ba88037efa2c051c877b58f2355cce786f8e))
+- add evaluator script for next word prediction and model evaluation ([c501d5e](https://github.com///commit/c501d5e42b05ef6054320716b6739a09fec8a109))
 - add .gitignore to exclude Python-generated files and IDE configurations ([adb6a65](https://github.com///commit/adb6a650c2dc70dcab4ba77e404d470ea436c991))
 - add data processing script for handling translation data and generating dictionaries ([e1a17c5](https://github.com///commit/e1a17c584281fcab6e8b4a377105c399ad3abaca))
 - add data preprocessing script for loading and storing translation data ([87e21a0](https://github.com///commit/87e21a0ee190254706a46c20f7f67c137255d2e3))
@@ -20,7 +23,7 @@
 
 ### Docs
 
-- update CHANGELOG.md with recent feature additions ([56a9edb](https://github.com///commit/56a9edb361161349ecece697ea9f15c0c94eaa22))
+- update CHANGELOG.md with recent feature additions ([9b96348](https://github.com///commit/9b9634841ce864f058ee0b861f848106311c87be))
 - update CHANGELOG.md with recent feature additions and documentation updates ([a24736a](https://github.com///commit/a24736a58e1b11cd328571642795cb1a6b49107d))
 - add initial CHANGELOG.md with version 0.1.0 details ([b7e1437](https://github.com///commit/b7e14372f5e49d751527dea08c5cbbee5d97db56))
 - add Chinese README with project overview, quick start guide, and privacy statement ([07dcee2](https://github.com///commit/07dcee239733713682269e51d58da67c65165030))

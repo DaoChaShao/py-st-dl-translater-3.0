@@ -5,6 +5,8 @@
 
 ### Features
 
+- add configuration files for English and Chinese NLP pipelines ([b01c804](https://github.com///commit/b01c804df5e91758b801c215ca7e41e9f3146ae1))
+- add .gitignore to exclude Python-generated files and IDE configurations ([85c0515](https://github.com///commit/85c0515c8301df5a3c8d74eb08aed14bd6b68285))
 - add uv.lock ([b011e9c](https://github.com///commit/b011e9c79fb620cdf53d90242c08835ddae9448f))
 - add dependencies and configuration for git-changelog ([f28efe4](https://github.com///commit/f28efe49d9f7d3e451d3e5a9e4557013c036a995))
 
@@ -14,6 +16,7 @@
 
 ### Docs
 
+- add initial CHANGELOG.md with version 0.1.0 details ([b7e1437](https://github.com///commit/b7e14372f5e49d751527dea08c5cbbee5d97db56))
 - add Chinese README with project overview, quick start guide, and privacy statement ([07dcee2](https://github.com///commit/07dcee239733713682269e51d58da67c65165030))
 - add comprehensive project documentation and quick start guide ([56d4fbb](https://github.com///commit/56d4fbbe67134c7d839328be8055e1bf49f3176b))
 

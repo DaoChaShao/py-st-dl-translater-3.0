@@ -57,7 +57,6 @@ from .base_seq2seq import BaseSeqNet
 from .multi_task_gru import MultiTaskGRU
 from .multi_task_lstm import MultiTaskLSTM
 from .multi_task_rnn import MultiTaskRNN
-from .seq2seq import SeqToSeqCoder
 from .seq2seq_attn_gru import SeqToSeqGRUWithAttn
 from .seq2seq_attn_lstm import SeqToSeqLSTMWithAttn
 from .seq2seq_attn_rnn import SeqToSeqRNNWithAttn
@@ -86,8 +85,6 @@ __all__ = [
     "SeqToSeqGRUWithAttn",
     "SeqToSeqLSTMWithAttn",
     "SeqToSeqRNNWithAttn",
-
-    "SeqToSeqCoder",
 
     "SeqToSeqGRU",
     "SeqToSeqLSTM",

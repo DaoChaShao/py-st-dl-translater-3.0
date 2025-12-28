@@ -15,7 +15,7 @@ from typing import final, Literal, Final
 WIDTH: int = 64
 
 
-class BaseRNN(ABC, nn.Module):
+class BaseRNN(nn.Module, ABC):
     """ Abstract Base Class for RNN-based Networks """
 
     def __init__(self,

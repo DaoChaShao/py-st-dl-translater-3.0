@@ -16,7 +16,7 @@ from typing import final, Literal, Final
 WIDTH: int = 64
 
 
-class BaseSeqNet(ABC, nn.Module):
+class BaseSeqNet(nn.Module, ABC):
     """ Abstract Base Class for Sequence-based Networks """
 
     def __init__(self,

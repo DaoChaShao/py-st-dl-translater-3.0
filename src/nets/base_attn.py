@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 from torch import nn, Tensor, bmm
 
 
-class BaseAttn(ABC, nn.Module):
+class BaseAttn(nn.Module, ABC):
     """ Base attention mechanism for sequence models """
 
     def __init__(self, enc_hn_dims: int, dec_hn_dims: int) -> None:

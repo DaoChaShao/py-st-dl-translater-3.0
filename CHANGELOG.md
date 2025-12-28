@@ -1,10 +1,13 @@
 <!-- insertion marker -->
 <a name="0.1.0"></a>
 
-## [0.1.0](https://github.com///compare/462b4205a745640e923f99d879c1c1ff0fab89e9...0.1.0) (2025-12-27)
+## [0.1.0](https://github.com///compare/462b4205a745640e923f99d879c1c1ff0fab89e9...0.1.0) (2025-12-28)
 
 ### Features
 
+- add ArtificialPositionEncoder and TransformerPositionEncoder classes for position encoding ([4b1ec26](https://github.com///commit/4b1ec263b1ba0446937bf6ed8600bf9aec5d5de5))
+- add BasePositionEncoder class for position encoding in models ([84c785b](https://github.com///commit/84c785b1db93a60fcd555b4a5d6d0aabdf877816))
+- add position encoders to module exports in __init__.py ([4c7fb16](https://github.com///commit/4c7fb1690698bfcb969389112e36116f98ad2848))
 - add sqlite3.db ([e3ebaa6](https://github.com///commit/e3ebaa6ca63e26d20b1e54716c13068e03afbedb))
 - add cmn.txt ([0b66474](https://github.com///commit/0b66474b3539412c11e10e419d938619381a8d96))
 - add unet_focal.py module for Focal Loss implementation ([89de91f](https://github.com///commit/89de91f1eb4a6f7a2137a57b4ecb77f9a413a874))
@@ -99,6 +102,7 @@
 
 ### Docs
 
+- update CHANGELOG.md to include recent chore and documentation updates ([f47d95d](https://github.com///commit/f47d95dbb4101a2e9aeeabd7cd5b5731608b4bd9))
 - update CHANGELOG.md with recent additions ([72e4857](https://github.com///commit/72e48571738298317e1a265cbb9a095186e3e123))
 - add section for code refactoring in CHANGELOG.md ([7f37e65](https://github.com///commit/7f37e6556c2b9e1b9c785ed9f7f793677589500d))
 - update CHANGELOG.md with recent feature additions ([48d3f03](https://github.com///commit/48d3f03b0a7df5ca8699c04d48e7dc8951c56937))
@@ -109,6 +113,9 @@
 
 ### Code Refactoring
 
+- change class inheritance order in BaseSeqNet ([72e152a](https://github.com///commit/72e152ae76783be86b871c93bba8e77a8e6b5e7c))
+- change class inheritance order in BaseRNN ([e73a8ce](https://github.com///commit/e73a8ce876caa627a739f3f7963d7c36c571ea5f))
+- change class inheritance order in BaseAttn ([2b32e1d](https://github.com///commit/2b32e1d77fa9347a2993d9b1989c7a9586c2e1a9))
 - remove unused SeqToSeqCoder import from __init__.py ([9919807](https://github.com///commit/99198071e469557ce453f3539a88c83d379269a8))
 - remove unused imports from preprocessor.py ([a3c3661](https://github.com///commit/a3c366148ca6fb3a1196d3dfe3981f8133357039))
 - remove unused model paths from cfg_base.py ([cca40a4](https://github.com///commit/cca40a4121f0bc1e50281c2458030a95c3dbf514))

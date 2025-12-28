@@ -52,11 +52,13 @@ __version__ = "0.3.0"
 
 from .attentions import AdditiveAttention, DotProductAttention, ScaledDotProductAttention
 from .base_attn import BaseAttn
+from .base_encoder4positions import BasePositionEncoder
 from .base_rnn import BaseRNN
 from .base_seq2seq import BaseSeqNet
 from .multi_task_gru import MultiTaskGRU
 from .multi_task_lstm import MultiTaskLSTM
 from .multi_task_rnn import MultiTaskRNN
+from .position_encoders import ArtificialPositionEncoder, TransformerPositionEncoder
 from .seq2seq_attn_gru import SeqToSeqGRUWithAttn
 from .seq2seq_attn_lstm import SeqToSeqLSTMWithAttn
 from .seq2seq_attn_rnn import SeqToSeqRNNWithAttn
@@ -75,12 +77,16 @@ __all__ = [
     "ScaledDotProductAttention",
 
     "BaseAttn",
+    "BasePositionEncoder",
     "BaseRNN",
     "BaseSeqNet",
 
     "MultiTaskGRU",
     "MultiTaskLSTM",
     "MultiTaskRNN",
+
+    "ArtificialPositionEncoder",
+    "TransformerPositionEncoder",
 
     "SeqToSeqGRUWithAttn",
     "SeqToSeqLSTMWithAttn",

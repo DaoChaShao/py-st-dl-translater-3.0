@@ -3,7 +3,7 @@
 # @Time     :   2025/12/15 11:11
 # @Author   :   Shawn
 # @Version  :   Version 0.1.0
-# @File     :   base_rnn.py
+# @File     :   base_ann.py
 # @Desc     :   
 
 from abc import ABC, abstractmethod
@@ -15,7 +15,7 @@ from typing import final, Literal, Final
 WIDTH: int = 64
 
 
-class BaseRNN(nn.Module, ABC):
+class BaseANN(nn.Module, ABC):
     """ Abstract Base Class for RNN-based Networks """
 
     def __init__(self,
@@ -25,7 +25,6 @@ class BaseRNN(nn.Module, ABC):
                  accelerator: str | Literal["cuda", "cpu"] = "cpu",
                  PAD: int = 0
                  ) -> None:
-        super().__init__()
         """ Initialize the ABCNet class
         :param vocab_size: size of the vocabulary
         :param embedding_dim: dimension of the embedding layer
@@ -36,6 +35,7 @@ class BaseRNN(nn.Module, ABC):
         :param accelerator: accelerator for PyTorch
         :param PAD: padding index for the embedding layer
         """
+        super().__init__()
         self._L: int = vocab_size  # Lexicon/Vocabulary size
         self._H: int = embedding_dim  # Embedding dimension
         self._M: int = hidden_size  # Hidden dimension
@@ -57,34 +57,6 @@ class BaseRNN(nn.Module, ABC):
         :return: number of directions (1 for unidirectional, 2 for bidirectional)
         """
         return 2 if bid else 1
-
-    @property
-    def vocab_size(self) -> int:
-        """ Get vocabulary size
-        :return: vocabulary size
-        """
-        return self._L
-
-    @property
-    def embedding_dim(self) -> int:
-        """ Get embedding dimension
-        :return: embedding dimension
-        """
-        return self._H
-
-    @property
-    def hidden_size(self) -> int:
-        """ Get hidden size
-        :return: hidden size
-        """
-        return self._M
-
-    @property
-    def num_layers(self) -> int:
-        """ Get number of layers
-        :return: number of layers
-        """
-        return self._C
 
     @abstractmethod
     def forward(self, x: Tensor) -> Tensor:
@@ -189,6 +161,34 @@ class BaseRNN(nn.Module, ABC):
         print(f"Trainable parameters:     {trainable_params:,}")
         print(f"Non-trainable parameters: {total_params - trainable_params:,}")
         print("*" * WIDTH)
+
+    @property
+    def vocab_size(self) -> int:
+        """ Get vocabulary size
+        :return: vocabulary size
+        """
+        return self._L
+
+    @property
+    def embedding_dim(self) -> int:
+        """ Get embedding dimension
+        :return: embedding dimension
+        """
+        return self._H
+
+    @property
+    def hidden_size(self) -> int:
+        """ Get hidden size
+        :return: hidden size
+        """
+        return self._M
+
+    @property
+    def num_layers(self) -> int:
+        """ Get number of layers
+        :return: number of layers
+        """
+        return self._C
 
 
 if __name__ == "__main__":

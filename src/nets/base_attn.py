@@ -31,11 +31,7 @@ class BaseAttn(nn.Module, ABC):
         """
         pass
 
-    def forward(self,
-                query: Tensor,
-                memory: Tensor,
-                mask: Tensor | None = None,
-                ) -> tuple[Tensor, Tensor]:
+    def forward(self, query: Tensor, memory: Tensor, mask: Tensor | None = None, ) -> tuple[Tensor, Tensor]:
         """ Forward pass for attention mechanism
         :param query: decoder hidden at current time step [B, D_dec]
         :param memory: encoder outputs (key/value) [B, S, D_enc]

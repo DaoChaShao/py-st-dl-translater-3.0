@@ -50,8 +50,7 @@ class BasePositionEncoder(nn.Module, ABC):
         :return: Position Encodings Tensor of shape (1, max_len, dim_model)
         """
         # Initialize Positional Encoding Matrix
-
-    pass
+        pass
 
     @abstractmethod
     def forward(self, X: Tensor) -> Tensor:
@@ -63,12 +62,16 @@ class BasePositionEncoder(nn.Module, ABC):
 
     @property
     def max_len(self) -> int:
-        """ Get Maximum Length of the Input Sequence """
+        """ Get Maximum Length of the Input Sequence
+        :return: Maximum Length of the Input Sequence
+        """
         return self._max_len
 
     @property
     def dim_model(self) -> int:
-        """ Get Dimension of the Model Embeddings """
+        """ Get Dimension of the Model Embeddings
+        :return: Dimension of the Model Embeddings
+        """
         return self._dim_model
 
 

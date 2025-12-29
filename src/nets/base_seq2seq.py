@@ -26,7 +26,6 @@ class BaseSeqNet(nn.Module, ABC):
                  accelerator: str | Literal["cuda", "cpu"] = "cpu",
                  PAD_SRC: int = 0, PAD_TGT: int = 0, SOS: int = 2, EOS: int = 3,
                  ) -> None:
-        super().__init__()
         """ Initialize the BaseSeq class
         :param vocab_size_src: size of the input vocabulary
         :param vocab_size_tgt: size of the output vocabulary
@@ -41,6 +40,7 @@ class BaseSeqNet(nn.Module, ABC):
         :param SOS: start-of-sequence token index
         :param EOS: end-of-sequence token index
         """
+        super().__init__()
         self._vocab_src: int = vocab_size_src
         self._vocab_tgt: int = vocab_size_tgt
         self._H: int = embedding_dim  # Embedding dimension
@@ -67,41 +67,7 @@ class BaseSeqNet(nn.Module, ABC):
         """
         return 2 if bid else 1
 
-    @property
-    def source_vocab_size(self) -> int:
-        """ Get the source vocabulary size
-        :return: source vocabulary size
-        """
-        return self._vocab_src
-
-    @property
-    def target_vocab_size(self) -> int:
-        """ Get the target vocabulary size
-        :return: target vocabulary size
-        """
-        return self._vocab_tgt
-
-    @property
-    def embedding_dim(self) -> int:
-        """ Get the embedding dimension
-        :return: embedding dimension
-        """
-        return self._H
-
-    @property
-    def hidden_size(self) -> int:
-        """ Get the hidden size
-        :return: hidden size
-        """
-        return self._M
-
-    @property
-    def num_layers(self) -> int:
-        """ Get the number of layers
-        :return: number of layers
-        """
-        return self._C
-
+    @final
     def init_weights(self) -> None:
         """ Initialize model weights with appropriate schemes """
         for name, param in self.named_parameters():
@@ -268,6 +234,41 @@ class BaseSeqNet(nn.Module, ABC):
         print(f"Trainable parameters:     {trainable_params:,}")
         print(f"Non-trainable parameters: {total_params - trainable_params:,}")
         print("*" * WIDTH)
+
+    @property
+    def source_vocab_size(self) -> int:
+        """ Get the source vocabulary size
+        :return: source vocabulary size
+        """
+        return self._vocab_src
+
+    @property
+    def target_vocab_size(self) -> int:
+        """ Get the target vocabulary size
+        :return: target vocabulary size
+        """
+        return self._vocab_tgt
+
+    @property
+    def embedding_dim(self) -> int:
+        """ Get the embedding dimension
+        :return: embedding dimension
+        """
+        return self._H
+
+    @property
+    def hidden_size(self) -> int:
+        """ Get the hidden size
+        :return: hidden size
+        """
+        return self._M
+
+    @property
+    def num_layers(self) -> int:
+        """ Get the number of layers
+        :return: number of layers
+        """
+        return self._C
 
 
 if __name__ == "__main__":

@@ -53,7 +53,7 @@ __version__ = "0.3.0"
 from .attentions import AdditiveAttention, DotProductAttention, ScaledDotProductAttention
 from .base_attn import BaseAttn
 from .base_encoder4positions import BasePositionEncoder
-from .base_rnn import BaseRNN
+from .base_ann import BaseANN
 from .base_seq2seq import BaseSeqNet
 from .multi_task_gru import MultiTaskGRU
 from .multi_task_lstm import MultiTaskLSTM
@@ -78,7 +78,7 @@ __all__ = [
 
     "BaseAttn",
     "BasePositionEncoder",
-    "BaseRNN",
+    "BaseANN",
     "BaseSeqNet",
 
     "MultiTaskGRU",

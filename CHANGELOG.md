@@ -1,10 +1,13 @@
 <!-- insertion marker -->
 <a name="0.1.0"></a>
 
-## [0.1.0](https://github.com///compare/462b4205a745640e923f99d879c1c1ff0fab89e9...0.1.0) (2025-12-28)
+## [0.1.0](https://github.com///compare/462b4205a745640e923f99d879c1c1ff0fab89e9...0.1.0) (2025-12-29)
 
 ### Features
 
+- add TransformerSeqEncoder class for Pytorch Transformer Encoder Network ([c1c1347](https://github.com///commit/c1c1347c3f7ce45c5be9f5774ea35d909834bd98))
+- add TransformerSeqDecoder class for Pytorch Transformer Decoder Network ([8471174](https://github.com///commit/84711744c55d19485bdb22fca928fce0014c0e21))
+- implement Seq2Seq Transformer model with encoder and decoder ([ebb6d9e](https://github.com///commit/ebb6d9e57e19a0e1cbfaa40639a76d2a614ff399))
 - add ArtificialPositionEncoder and TransformerPositionEncoder classes for position encoding ([4b1ec26](https://github.com///commit/4b1ec263b1ba0446937bf6ed8600bf9aec5d5de5))
 - add BasePositionEncoder class for position encoding in models ([84c785b](https://github.com///commit/84c785b1db93a60fcd555b4a5d6d0aabdf877816))
 - add position encoders to module exports in __init__.py ([4c7fb16](https://github.com///commit/4c7fb1690698bfcb969389112e36116f98ad2848))
@@ -102,6 +105,7 @@
 
 ### Docs
 
+- update CHANGELOG.md for recent feature and refactoring additions ([c9cbcc2](https://github.com///commit/c9cbcc292ce75f870da16e5964fec83bdbf66201))
 - update CHANGELOG.md to include recent chore and documentation updates ([f47d95d](https://github.com///commit/f47d95dbb4101a2e9aeeabd7cd5b5731608b4bd9))
 - update CHANGELOG.md with recent additions ([72e4857](https://github.com///commit/72e48571738298317e1a265cbb9a095186e3e123))
 - add section for code refactoring in CHANGELOG.md ([7f37e65](https://github.com///commit/7f37e6556c2b9e1b9c785ed9f7f793677589500d))
@@ -113,6 +117,16 @@
 
 ### Code Refactoring
 
+- update SeqEncoder to inherit from BaseANN instead of BaseRNN ([7378004](https://github.com///commit/73780045e0d56a9588e73251cc8c964cff81cb34))
+- add scale property to PositionEncoder for better access to scale factor ([ca9569c](https://github.com///commit/ca9569c7ec02dcbd2c6f2f7e603a0f7828a306dd))
+- rename BaseRNN to BaseANN in multi_task_rnn.py ([1043094](https://github.com///commit/1043094fb133d0a1f282f12aca6920c81a7cc8b7))
+- rename BaseRNN to BaseANN in multi_task_lstm.py ([6466a77](https://github.com///commit/6466a776175fb4d89c452134dd09e8711b1dfdb7))
+- rename BaseRNN to BaseANN in multi_task_gru.py ([785b201](https://github.com///commit/785b201455fd581114e1efa63c4e64a97a1b67d6))
+- reorganize properties in BaseSeq2Seq and ensure proper initialization ([eee199a](https://github.com///commit/eee199ae51271880e8cb0744d13c8a0e86da96a6))
+- improve docstrings for max_len and dim_model properties in base_encoder4positions.py ([2e594c0](https://github.com///commit/2e594c06bd098511506ccf0cb81dcdfab77d42f6))
+- simplify forward method signature in base_attn.py ([c12db77](https://github.com///commit/c12db77706f45a7e2de7bd07b30603e277dcc5d2))
+- rename BaseRNN to BaseANN and reorganize properties in base_ann.py ([5a34ef4](https://github.com///commit/5a34ef4c49bc68fec79f82dfaeb42c5abce4b221))
+- update import from BaseRNN to BaseANN in __init__.py ([a73ce6c](https://github.com///commit/a73ce6c03c2be051a2f5dabba64d90de00c124ee))
 - change class inheritance order in BaseSeqNet ([72e152a](https://github.com///commit/72e152ae76783be86b871c93bba8e77a8e6b5e7c))
 - change class inheritance order in BaseRNN ([e73a8ce](https://github.com///commit/e73a8ce876caa627a739f3f7963d7c36c571ea5f))
 - change class inheritance order in BaseAttn ([2b32e1d](https://github.com///commit/2b32e1d77fa9347a2993d9b1989c7a9586c2e1a9))

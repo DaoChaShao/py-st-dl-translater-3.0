@@ -12,10 +12,10 @@ from torch import (Tensor, nn, zeros_like, device,
 from typing import override, Literal
 
 from src.configs.cfg_types import SeqNets
-from src.nets.base_rnn import BaseRNN
+from src.nets.base_ann import BaseANN
 
 
-class SeqEncoder(BaseRNN):
+class SeqEncoder(BaseANN):
     def __init__(self,
                  vocab_size: int, embedding_dim: int, hidden_size: int, num_layers: int,
                  dropout_rate: float = 0.3, bidirectional: bool = True,

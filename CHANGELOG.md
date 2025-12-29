@@ -5,6 +5,8 @@
 
 ### Features
 
+- add dictionary_en.json ([a99b735](https://github.com///commit/a99b7353c31d4152f4662e1c1d1b8287ab7b4933))
+- add dictionary_cn.json ([c8f7bde](https://github.com///commit/c8f7bdea146e5a9fe920027458fd45d16b9eb4b4))
 - add TransformerSeqEncoder class for Pytorch Transformer Encoder Network ([c1c1347](https://github.com///commit/c1c1347c3f7ce45c5be9f5774ea35d909834bd98))
 - add TransformerSeqDecoder class for Pytorch Transformer Decoder Network ([8471174](https://github.com///commit/84711744c55d19485bdb22fca928fce0014c0e21))
 - implement Seq2Seq Transformer model with encoder and decoder ([ebb6d9e](https://github.com///commit/ebb6d9e57e19a0e1cbfaa40639a76d2a614ff399))
@@ -105,6 +107,7 @@
 
 ### Docs
 
+- update CHANGELOG.md ([66f62b8](https://github.com///commit/66f62b8b5a1883222a1ad105b58b002a85378590))
 - update CHANGELOG.md for recent feature and refactoring additions ([c9cbcc2](https://github.com///commit/c9cbcc292ce75f870da16e5964fec83bdbf66201))
 - update CHANGELOG.md to include recent chore and documentation updates ([f47d95d](https://github.com///commit/f47d95dbb4101a2e9aeeabd7cd5b5731608b4bd9))
 - update CHANGELOG.md with recent additions ([72e4857](https://github.com///commit/72e48571738298317e1a265cbb9a095186e3e123))

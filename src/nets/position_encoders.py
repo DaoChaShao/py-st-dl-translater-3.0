@@ -6,7 +6,7 @@
 # @File     :   position_encoders.py
 # @Desc     :   
 
-from torch import (nn, Tensor, zeros, device, float32, sin, cos,
+from torch import (Tensor, zeros, device, float32, sin, cos,
                    arange, exp, log, tensor,
                    randn, abs)
 from typing import override
@@ -110,6 +110,13 @@ class TransformerPositionEncoder(BasePositionEncoder):
         assert seq_len <= self._max_len, "Sequence length exceeds maximum length."
 
         return X + self._positions[:seq_len, :].unsqueeze(0) * self._scale
+
+    @property
+    def scale(self) -> float | None:
+        """ Get the Scale of the Position Encoder
+        :return: Scale factor
+        """
+        return self._scale
 
 
 if __name__ == "__main__":

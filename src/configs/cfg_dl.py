@@ -22,6 +22,7 @@ class DataPreprocessor:
     PCA_VARIANCE_THRESHOLD: float = 0.95
     RANDOMNESS: int = 27
     SHUFFLE: bool = True
+    TEMPERATURE: float = 1.0
     TEST_SIZE: float = 0.2
     WORKERS: int = 4
 

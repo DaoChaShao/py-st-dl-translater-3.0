@@ -10,6 +10,7 @@ from PySide6.QtCore import QObject, Signal
 from datetime import datetime
 from json import dumps
 from torch import nn, optim, no_grad, save, device, tensor, exp, Tensor
+from typing import Literal
 
 from src.dataloaders import TorchDataLoader
 from src.trainers.calc4seq_text_quilty import TextQualityScorer
@@ -30,7 +31,8 @@ class SeqToSeqTransformerTrainer(QObject):
                  accelerator: str = "auto", clip_grad: bool = True,
                  *,
                  top_k: int = 50, top_p: float = 0.7, temperature: float = 1.0,
-                 beam_width: int = 1, early_stopper: bool = True, do_sample: bool = True,
+                 beam_width: int | Literal[1, 3, 5, 10, 20] = 1,
+                 early_stopper: bool = True, do_sample: bool = True,
                  length_penalty_factor: float = 0.6,
                  ) -> None:
         """ Initialise the TorchTrainer4SeqToSeq class

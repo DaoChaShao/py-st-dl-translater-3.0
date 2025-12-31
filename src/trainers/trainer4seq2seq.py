@@ -30,7 +30,6 @@ class TorchTrainer4SeqToSeq(QObject):
                  decode_strategy: str = "greedy", beam_width: int = 5,
                  accelerator: str = "auto",
                  ) -> None:
-        super().__init__()
         """ Initialise the TorchTrainer4SeqToSeq class
         :param vocab_size_tgt: size of the targert vocabulary
         :param model: the seq2seq model to be trained
@@ -44,6 +43,7 @@ class TorchTrainer4SeqToSeq(QObject):
         :param beam_width: beam width for beam search decoding
         :param accelerator: device to use for training ("cpu", "cuda", "auto", etc.)
         """
+        super().__init__()
         self._vocab_size = vocab_size_tgt
         self._PAD = PAD
         self._SOS = SOS

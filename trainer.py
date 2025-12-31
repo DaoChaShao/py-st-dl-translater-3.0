@@ -10,7 +10,7 @@ from pathlib import Path
 from torch import optim, nn
 
 from src.configs.cfg_seq2seq_transformer import CONFIG4S2STF
-from src.configs.cfg_types import Tokens, SeqNets, SeqStrategies, SeqMergeMethods
+from src.configs.cfg_types import Tokens, SeqNets, SeqStrategies
 from src.configs.parser import set_argument_parser
 from src.trainers.trainer4seq2seq_transformer import SeqToSeqTransformerTrainer
 from src.nets.seq2seq_transformer import Seq2SeqTransformerNet

@@ -13,8 +13,8 @@ from torch import (nn, Tensor,
                    randint)
 from typing import final, Literal
 
-from src.nets.transformer_seq_encoder import TransformerSeqEncoder
-from src.nets.transformer_seq_decoder import TransformerSeqDecoder
+from src.nets.seq_encoder4transformer import TransformerSeqEncoder
+from src.nets.seq_decoder4transformer import TransformerSeqDecoder
 
 WIDTH: int = 64
 
@@ -158,7 +158,7 @@ class Seq2SeqTransformerNet(nn.Module):
                  memory_key_padding_mask: Tensor | None = None,
                  *,
                  top_k: int = 50, top_p: float = 0.7, temperature: float = 1.0,
-                 beams: int = 1,
+                 beams: int | Literal[1, 3, 5, 10, 20] = 1,
                  early_stopper: bool = True,
                  do_sample: bool = True,
                  length_penalty: float = 0.6

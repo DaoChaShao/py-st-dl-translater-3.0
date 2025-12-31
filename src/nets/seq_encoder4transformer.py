@@ -3,7 +3,7 @@
 # @Time     :   2025/12/28 15:52
 # @Author   :   Shawn
 # @Version  :   Version 0.1.0
-# @File     :   transformer_seq_encoder.py
+# @File     :   seq_encoder4transformer.py
 # @Desc     :   
 
 from torch import (nn, device, Tensor,

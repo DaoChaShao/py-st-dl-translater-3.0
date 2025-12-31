@@ -14,7 +14,7 @@ from src.configs.cfg_dl import DataPreprocessor, Hyperparameters
 
 @dataclass
 class TransformerParams:
-    BEAMS: int = 4
+    BEAMS: int = 5
     EMBEDDING_DIMS: int = 256
     FEEDFORWARD_DIMS: int = 512
     HEADS: int = 2

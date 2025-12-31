@@ -51,23 +51,34 @@ __author__ = "Shawn Yu"
 __version__ = "0.3.0"
 
 from .attentions import AdditiveAttention, DotProductAttention, ScaledDotProductAttention
+
 from .base_attn import BaseAttn
 from .base_encoder4positions import BasePositionEncoder
 from .base_ann import BaseANN
 from .base_seq2seq import BaseSeqNet
+
 from .multi_task_gru import MultiTaskGRU
 from .multi_task_lstm import MultiTaskLSTM
 from .multi_task_rnn import MultiTaskRNN
+
 from .position_encoders import ArtificialPositionEncoder, TransformerPositionEncoder
+
 from .seq2seq_attn_gru import SeqToSeqGRUWithAttn
 from .seq2seq_attn_lstm import SeqToSeqLSTMWithAttn
 from .seq2seq_attn_rnn import SeqToSeqRNNWithAttn
 from .seq2seq_task_gru import SeqToSeqGRU
 from .seq2seq_task_lstm import SeqToSeqLSTM
 from .seq2seq_task_rnn import SeqToSeqRNN
+
+from .seq2seq_transformer import Seq2SeqTransformerNet
+
 from .seq_decoder import SeqDecoder
 from .seq_decoder4attn import SeqDecoderWithAttn
+from .seq_encoder4transformer import TransformerSeqEncoder
+
 from .seq_encoder import SeqEncoder
+from .seq_decoder4transformer import TransformerSeqDecoder
+
 from .unet4layers4sem import Standard4LayersUNetClassification
 from .unet5layers4sem import Standard5LayersUNetForClassification
 
@@ -96,9 +107,14 @@ __all__ = [
     "SeqToSeqLSTM",
     "SeqToSeqRNN",
 
+    "Seq2SeqTransformerNet",
+
     "SeqDecoder",
     "SeqDecoderWithAttn",
+    "TransformerSeqDecoder",
+
     "SeqEncoder",
+    "TransformerSeqEncoder",
 
     "Standard4LayersUNetClassification",
     "Standard5LayersUNetForClassification",

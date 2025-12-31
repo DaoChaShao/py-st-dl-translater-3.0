@@ -9,13 +9,11 @@
 from pathlib import Path
 from torch import optim, nn
 
-from src.configs.cfg_rnn import CONFIG4RNN
+from src.configs.cfg_seq2seq_transformer import CONFIG4S2STF
 from src.configs.cfg_types import Tokens, SeqNets, SeqStrategies, SeqMergeMethods
 from src.configs.parser import set_argument_parser
-from src.trainers.trainer4seq2seq import TorchTrainer4SeqToSeq
-from src.nets.seq2seq_task_gru import SeqToSeqGRU
-from src.nets.seq2seq_task_lstm import SeqToSeqLSTM
-from src.nets.seq2seq_task_rnn import SeqToSeqRNN
+from src.trainers.trainer4seq2seq_transformer import SeqToSeqTransformerTrainer
+from src.nets.seq2seq_transformer import Seq2SeqTransformerNet
 from src.utils.stats import load_json
 from src.utils.PT import TorchRandomSeed
 
@@ -29,9 +27,9 @@ def main() -> None:
 
     with TorchRandomSeed("Chinese to English (Seq2Seq) Translation", tick_tock=True):
         # Get the dictionary
-        dic_cn: Path = Path(CONFIG4RNN.FILEPATHS.DICTIONARY_CN)
+        dic_cn: Path = Path(CONFIG4S2STF.FILEPATHS.DICTIONARY_CN)
         dictionary_cn = load_json(dic_cn) if dic_cn.exists() else print("Dictionary file not found.")
-        dic_en: Path = Path(CONFIG4RNN.FILEPATHS.DICTIONARY_EN)
+        dic_en: Path = Path(CONFIG4S2STF.FILEPATHS.DICTIONARY_EN)
         dictionary_en = load_json(dic_en) if dic_en.exists() else print("Dictionary file not found.")
         # print(dictionary_cn[Tokens.PAD])
         # print(dictionary_en[Tokens.PAD])
@@ -45,113 +43,65 @@ def main() -> None:
         train, valid = prepare_data()
 
         # Initialize model
-        model = SeqToSeqGRU(
-            # model = SeqToSeqRNN(
-            # model = SeqToSeqLSTM(
+        model = Seq2SeqTransformerNet(
             vocab_size_src=vocab_size4cn,
             vocab_size_tgt=vocab_size4en,
-            embedding_dim=CONFIG4RNN.PARAMETERS.EMBEDDING_DIM,
-            hidden_size=CONFIG4RNN.PARAMETERS.HIDDEN_SIZE,
-            num_layers=CONFIG4RNN.PARAMETERS.LAYERS,
-            dropout_rate=CONFIG4RNN.PREPROCESSOR.DROPOUT_RATIO,
-            bidirectional=True,
-            accelerator=CONFIG4RNN.HYPERPARAMETERS.ACCELERATOR,
-            PAD_SRC=dictionary_cn[Tokens.PAD],
-            PAD_TGT=dictionary_en[Tokens.PAD],
+            embedding_dims=CONFIG4S2STF.PARAMETERS.EMBEDDING_DIMS,
+            scaler=CONFIG4S2STF.PARAMETERS.SCALER,
+            max_len=CONFIG4S2STF.PARAMETERS.MAX_LEN,
+            num_heads=CONFIG4S2STF.PARAMETERS.HEADS,
+            feedforward_dims=CONFIG4S2STF.PARAMETERS.FEEDFORWARD_DIMS,
+            num_layers=CONFIG4S2STF.PARAMETERS.LAYERS,
+            dropout=CONFIG4S2STF.PREPROCESSOR.DROPOUT_RATIO,
+            activation="relu",
+            accelerator=CONFIG4S2STF.HYPERPARAMETERS.ACCELERATOR,
+            PAD=dictionary_cn[Tokens.PAD],
             SOS=dictionary_cn[Tokens.SOS],
             EOS=dictionary_cn[Tokens.EOS],
-            merge_method=SeqMergeMethods.CONCAT,
         )
         # Setup optimizer and loss function
-        optimizer = optim.AdamW(model.parameters(), lr=args.alpha, weight_decay=CONFIG4RNN.HYPERPARAMETERS.DECAY)
-        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=2)
+        optimizer = optim.AdamW(model.parameters(), lr=args.alpha, weight_decay=CONFIG4S2STF.HYPERPARAMETERS.DECAY)
+        scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min", factor=0.5, patience=3)
         criterion = nn.CrossEntropyLoss(ignore_index=dictionary_en[Tokens.PAD])
         model.summary()
         """
         ****************************************************************
-        Model Summary for SeqToSeqGRU (Bidirectional: False)
+        Data Processing Summary:
         ----------------------------------------------------------------
-        - Source Vocabulary Size: 5235
-        - Target Vocabulary Size: 3189
-        - Embedding Dimension:    128
-        - Hidden Size:            256
-        - Number of Layers:       2
-        - Dropout Rate:           0.5
-        - Bidirectional:          False
-        - Device:                 cpu
-        - PAD Token (Source):     0
-        - PAD Token (Target):     0
-        - SOS Token:              2
-        - EOS Token:              3
-        ----------------------------------------------------------------
-        Total parameters:         3,280,245
-        Trainable parameters:     3,280,245
-        Non-trainable parameters: 0
+        Train dataset: 20408 Samples
+        Valid dataset: 4373 Samples
+        Chinese Dictionary Size: 5235
+        English Dictionary Size: 3189
+        The min length of the sequence: 1
+        The average length of the sequence: 6.93
+        The max length of the sequence: 28
         ****************************************************************
         ****************************************************************
-        Model Summary for SeqToSeqGRU (Bidirectional: True)
+        Model Summary for Seq2SeqTransformerNet
         ----------------------------------------------------------------
-        - Source Vocabulary Size: 5235
-        - Target Vocabulary Size: 3189
-        - Embedding Dimension:    128
-        - Hidden Size:            256
-        - Number of Layers:       2
-        - Dropout Rate:           0.5
-        - Bidirectional:          True
-        - Device:                 cpu
-        - PAD Token (Source):     0
-        - PAD Token (Target):     0
-        - SOS Token:              2
-        - EOS Token:              3
+        Source Vocabulary Size:   5235
+        Target Vocabulary Size:   3189
+        Embedding Dimension:      256
+        Maximum Length:           100
+        Scale size:               1.0
+        Number of Heads:          2
+        Feedforward Dimension:    512
+        Number of Layers:         2
+        Dropout Rate:             0.5
+        Activation:               relu
+        Accelerator Location:     cpu
+        Pad Token Index:          0
+        SOS Token Index:          2
+        EOS Token Index:          3
         ----------------------------------------------------------------
-        Total parameters:         7,051,893
-        Trainable parameters:     7,051,893
-        Non-trainable parameters: 0
-        ****************************************************************
-        ****************************************************************
-        Model Summary for SeqToSeqRNN (Bidirectional: True)
-        ----------------------------------------------------------------
-        - Source Vocabulary Size: 5235
-        - Target Vocabulary Size: 3189
-        - Embedding Dimension:    128
-        - Hidden Size:            256
-        - Number of Layers:       2
-        - Dropout Rate:           0.5
-        - Bidirectional:          True
-        - Device:                 cpu
-        - PAD Token (Source):     0
-        - PAD Token (Target):     0
-        - SOS Token:              2
-        - EOS Token:              3
-        ----------------------------------------------------------------
-        Total parameters:         4,160,117
-        Trainable parameters:     4,160,117
-        Non-trainable parameters: 0
-        ****************************************************************
-        ****************************************************************
-        Model Summary for SeqToSeqLSTM
-        ----------------------------------------------------------------
-        - Source Vocabulary Size: 5235
-        - Target Vocabulary Size: 3189
-        - Embedding Dimension:    128
-        - Hidden Size:            256
-        - Number of Layers:       2
-        - Dropout Rate:           0.5
-        - Bidirectional:          True
-        - Device:                 cpu
-        - PAD Token (Source):     0
-        - PAD Token (Target):     0
-        - SOS Token:              2
-        - EOS Token:              3
-        ----------------------------------------------------------------
-        Total parameters:         8,497,781
-        Trainable parameters:     8,497,781
+        Total Parameters:         6,930,805
+        Trainable Parameters:     6,930,805
         Non-trainable parameters: 0
         ****************************************************************
         """
 
         # Setup trainer
-        trainer = TorchTrainer4SeqToSeq(
+        trainer = SeqToSeqTransformerTrainer(
             vocab_size_tgt=vocab_size4en,
             model=model,
             optimiser=optimizer,
@@ -160,43 +110,29 @@ def main() -> None:
             PAD=dictionary_en[Tokens.PAD],
             SOS=dictionary_en[Tokens.SOS],
             EOS=dictionary_en[Tokens.EOS],
-            decode_strategy=SeqStrategies.BEAM_SEARCH,
-            beam_width=CONFIG4RNN.PARAMETERS.BEAM_SIZE,
-            accelerator=CONFIG4RNN.HYPERPARAMETERS.ACCELERATOR,
+            accelerator=CONFIG4S2STF.HYPERPARAMETERS.ACCELERATOR,
+            clip_grad=True,
+            top_k=CONFIG4S2STF.PARAMETERS.TOP_K,
+            top_p=CONFIG4S2STF.PARAMETERS.TOP_P,
+            temperature=CONFIG4S2STF.PREPROCESSOR.TEMPERATURE,
+            beam_width=CONFIG4S2STF.PARAMETERS.BEAMS,
+            early_stopper=CONFIG4S2STF.PARAMETERS.STOPPER,
+            do_sample=CONFIG4S2STF.PARAMETERS.SAMPLER,
+            length_penalty_factor=CONFIG4S2STF.PARAMETERS.LEN_PENALTY_FACTOR
         )
         # Train the model
         trainer.fit(
             train_loader=train,
             valid_loader=valid,
             epochs=args.epochs,
-            model_save_path=str(CONFIG4RNN.FILEPATHS.SAVED_NET),
-            log_name=f"{SeqNets.GRU}-{SeqStrategies.BEAM_SEARCH}-{SeqMergeMethods.CONCAT}",
+            model_save_path=str(CONFIG4S2STF.FILEPATHS.SAVED_NET),
+            log_name=f"{SeqNets.TF}-{SeqStrategies.BEAM if CONFIG4S2STF.PARAMETERS.BEAMS > 1 else SeqStrategies.GREEDY}",
         )
         """
         ****************************************************************
-        SeqToSeqGRU Evaluation Results:
+        Training Summary:
         ----------------------------------------------------------------
-        "bid": false, "epoch": 84/100, "strategy": "beam",   "merge": "mean",   "bleu": 0.0961, "rouge": 0.4535
-        "bid": false, "epoch": 84/100, "strategy": "beam",   "merge": "concat", "bleu": 0.0961, "rouge": 0.4535
-        "bid": false, "epoch": 89/100, "strategy": "greedy", "merge": "concat", "bleu": 0.0860, "rouge": 0.4394
-        "bid": false, "epoch": 84/100, "strategy": "greedy", "merge": "mean",   "bleu": 0.0860. "rouge": 0.4394
-        ----------------------------------------------------------------
-        "bid": true,  "epoch": 52/100, "strategy": "beam",   "merge": "concat", "bleu": 0.1675, "rouge": 0.5293 √
-        "bid": true,  "epoch": 74/100, "strategy": "beam",   "merge": "mean",   "bleu": 0.1235, "rouge": 0.4905
-        "bid": true,  "epoch": 52/100, "strategy": "greedy", "merge": "concat", "bleu": 0.1493, "rouge": 0.5139     
-        "bid": true,  "epoch": 74/100, "strategy": "greedy", "merge": "mean",   "bleu": 0.1133, "rouge": 0.4758
-        ****************************************************************
-        ****************************************************************
-        SeqToSeqRNN Evaluation Results:
-        ----------------------------------------------------------------
-        "bid": false, "epoch": 64/100, "strategy": "beam",   "merge": "concat", "bleu": 0.1299, "rouge": 0.4956
-        "bid": true,  "epoch": 23/100, "strategy": "beam",   "merge": "concat", "bleu": 0.1412, "rouge": 0.5107 √
-        ****************************************************************
-        ****************************************************************
-        SeqToSeqLSTM Evaluation Results:
-        ----------------------------------------------------------------
-        "bid": false, "epoch": 68/100, "strategy": "beam",   "merge": "concat",  "bleu": 0.1707, "rouge": 0.5328 √
-        "bid": true,  "epoch": 79/100, "strategy": "beam",   "merge": "concat",  "bleu": 0.1134, "rouge": 0.4787
+        "epoch": 92/100, "strategy": "greedy", "bleu": 0.2688, "rouge": 0.6271, "avg_pred_len": 7.5065, "perplexity": 7.3681
         ****************************************************************
         """
 

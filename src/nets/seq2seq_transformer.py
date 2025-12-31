@@ -23,7 +23,7 @@ class Seq2SeqTransformerNet(nn.Module):
     """ Sequence-to-Sequence Transformer Model """
 
     def __init__(self,
-                 vocab_size_src: int, vocab_size_tgt: int, embedding_dims: int,
+                 vocab_size_src: int, vocab_size_tgt: int, embedding_dims: int | Literal[256, 512, 768, 1024],
                  *,
                  scaler: float = 1.0, max_len: int = 100,
                  num_heads: int = 8, feedforward_dims: int = 2048, num_layers: int = 6,
@@ -31,7 +31,6 @@ class Seq2SeqTransformerNet(nn.Module):
                  activation: str | Literal["gelu", "relu"] = "relu",
                  accelerator: str | Literal["cuda", "cpu"] = "cpu",
                  PAD: int = 0, SOS: int = 2, EOS: int = 3,
-                 label_smoothing: float = 0.1
                  ) -> None:
         """ Initialize the Seq2Seq Transformer Model
         :param vocab_size_src: Vocabulary size of the source language
@@ -48,7 +47,6 @@ class Seq2SeqTransformerNet(nn.Module):
         :param PAD: Padding token index
         :param SOS: Start-of-sequence token index
         :param EOS: End-of-sequence token index
-        :param label_smoothing: Label smoothing factor
         """
         super().__init__()
         self._src_size: int = vocab_size_src
@@ -66,7 +64,6 @@ class Seq2SeqTransformerNet(nn.Module):
         self._tgt_size: int = vocab_size_tgt
         self._SOS: int = SOS
         self._EOS: int = EOS
-        self._smoother: float = label_smoothing
 
         # Initialize Encoder and Decoder
         self._encoder: TransformerSeqEncoder = self._init_transformer_encoder()
@@ -119,7 +116,7 @@ class Seq2SeqTransformerNet(nn.Module):
                 nn.init.xavier_uniform_(param)
 
     @final
-    def _get_memory_padding_mask(self, src: Tensor) -> Tensor:
+    def get_memory_padding_mask(self, src: Tensor) -> Tensor:
         """ Get Padding Mask for Encoder Memory
         :param src: Source sequence tensor
         :return: Padding mask tensor
@@ -141,7 +138,7 @@ class Seq2SeqTransformerNet(nn.Module):
         :return: Output tensor
         """
         # Create padding masks
-        memory_key_padding_mask: Tensor = self._get_memory_padding_mask(src)
+        memory_key_padding_mask: Tensor = self.get_memory_padding_mask(src)
         tgt_key_padding_mask: Tensor = self._get_tgt_padding_mask(tgt)
 
         # Forward pass
@@ -159,10 +156,12 @@ class Seq2SeqTransformerNet(nn.Module):
     def generate(self,
                  memory: Tensor,
                  memory_key_padding_mask: Tensor | None = None,
+                 *,
                  top_k: int = 50, top_p: float = 0.7, temperature: float = 1.0,
                  beams: int = 1,
                  early_stopper: bool = True,
-                 do_sample: bool = True
+                 do_sample: bool = True,
+                 length_penalty: float = 0.6
                  ) -> Tensor:
         """ Generate Sequences Autoregressively from Encoder Memory
         :param memory: Encoder Output Tensor of shape [batch_size, src_seq_len, embedding_dim]
@@ -174,6 +173,7 @@ class Seq2SeqTransformerNet(nn.Module):
         :param early_stopper: Whether to Stop Early if all sequences are finished
         :param memory_key_padding_mask: Padding mask for source sequences [batch_size, src_seq_len]
         :param do_sample: Whether to Do Sampling
+        :param length_penalty: Length Penalty for Beam Search
         :return: Generated Sequences Tensor of shape [batch_size, generated_seq_len]
         """
         batches = memory.size(0)
@@ -185,7 +185,7 @@ class Seq2SeqTransformerNet(nn.Module):
 
         # For beam search
         if beams > 1:
-            seq, _ = self._beam_search(memory, memory_key_padding_mask, beams, early_stopper)
+            seq, _ = self._beam_search(memory, memory_key_padding_mask, beams, early_stopper, length_penalty)
             return seq
 
         # For greedy/search sampling
@@ -244,7 +244,7 @@ class Seq2SeqTransformerNet(nn.Module):
                      memory_key_padding_mask: Tensor | None,
                      beams: int | Literal[5, 10, 20],
                      early_stopper: bool,
-                     alpha: float = 1.0
+                     alpha: float = 0.6
                      ) -> tuple[Tensor, Tensor]:
         """ Beam Search Generation
         :param memory: Encoder Output Tensor of shape [batch_size, src_seq_len, embedding_dim]
@@ -290,7 +290,8 @@ class Seq2SeqTransformerNet(nn.Module):
                 # [B, beams, 1]
                 mask = beam_finished.unsqueeze(-1)
 
-                # Only allow EOS for finished beams
+                # Mask all tokens for finished beams,
+                # then re-enable EOS as the only valid continuation
                 logits_prob = logits_prob.masked_fill(mask, float("-inf"))
                 # Cause a type mismatch between attn_mask (bool) and float(-inf)
                 # logits_prob[..., self._EOS] = logits_prob[..., self._EOS].masked_fill(
@@ -326,6 +327,14 @@ class Seq2SeqTransformerNet(nn.Module):
             beam_finished = new_finished
 
         seq_lengths = (beam_sequence != self._PAD).sum(dim=-1)  # [B, beams]
+        # Compute length penalty
+        # - The formula is from GNMT(Google Neural Machine Translation)
+        # - 5: constant to avoid penalizing short sequences too much, which is named as "baseline length"
+        # - 6: constant to normalize the penalty, which is named as "normalization factor"
+        # - alpha: hyperparameter to control the strength of the penalty
+        # -- alpha = 0.6: better performance in mid and long sequences
+        # -- alpha = 1.0: better performance in short sequences
+        # -- alpha > 1.0: stronger penalty on long sequences
         length_penalty = ((5 + seq_lengths).float() / 6) ** alpha  # [B, beams]
         # Apply length penalty
         beam_scores = beam_scores / length_penalty
@@ -356,28 +365,37 @@ class Seq2SeqTransformerNet(nn.Module):
         print("*" * WIDTH)
         print(f"Model Summary for {self.__class__.__name__}")
         print("-" * WIDTH)
-        print(f"Source Vocabulary Size: {self.src_vocab_size}")
-        print(f"Target Vocabulary Size: {self.tgt_vocab_size}")
-        print(f"Embedding Dimension:    {self.dim_model}")
-        print(f"Maximum Length:         {self.max_len}")
-        print(f"Scale size:             {self.scaler}")
-        print(f"Number of Heads:        {self.num_heads}")
-        print(f"Feedforward Dimension:  {self.feedforward_dims}")
-        print(f"Number of Layers:       {self.num_layers}")
-        print(f"Dropout Rate:           {self._dropout_rate}")
-        print(f"Activation:             {self._activation}")
-        print(f"Accelerator Location:   {self._accelerator}")
-        print(f"Pad Token Index:        {self.pad_token}")
-        print(f"EOS Token Index:        {self.sos_token}")
-        print(f"SOS Token Index:        {self.eos_token}")
+        print(f"Source Vocabulary Size:   {self.src_vocab_size}")
+        print(f"Target Vocabulary Size:   {self.tgt_vocab_size}")
+        print(f"Embedding Dimension:      {self.dim_model}")
+        print(f"Maximum Length:           {self.max_len}")
+        print(f"Scale size:               {self.scaler}")
+        print(f"Number of Heads:          {self.num_heads}")
+        print(f"Feedforward Dimension:    {self.feedforward_dims}")
+        print(f"Number of Layers:         {self.num_layers}")
+        print(f"Dropout Rate:             {self._dropout_rate}")
+        print(f"Activation:               {self._activation}")
+        print(f"Accelerator Location:     {self._accelerator}")
+        print(f"Pad Token Index:          {self.pad_token}")
+        print(f"SOS Token Index:          {self.sos_token}")
+        print(f"EOS Token Index:          {self.eos_token}")
         print("-" * WIDTH)
         # Calculate parameters
         total_params, trainable_params = self._count_parameters()
-        print(f"Seq2Seq Transformer Model Summary:")
-        print(f"Total Parameters: {total_params}")
-        print(f"Trainable Parameters: {trainable_params}")
+        print(f"Total Parameters:         {total_params:,}")
+        print(f"Trainable Parameters:     {trainable_params:,}")
         print(f"Non-trainable parameters: {total_params - trainable_params:,}")
         print("*" * WIDTH)
+
+    @property
+    def encoder(self) -> nn.Module:
+        """ Get the Transformer Encoder """
+        return self._encoder
+
+    @property
+    def decoder(self) -> nn.Module:
+        """ Get the Transformer Decoder """
+        return self._decoder
 
     @property
     def src_vocab_size(self) -> int:
@@ -456,7 +474,7 @@ if __name__ == "__main__":
     # random tensor [batch_size, src_len]
     src = randint(3, SRC_VOCAB, (BATCH, MAX_LEN))
     memory = net._encoder(src)
-    mem_mask = net._get_memory_padding_mask(src)
+    mem_mask = net.get_memory_padding_mask(src)
 
     # Greedy Test
     print("*" * WIDTH)

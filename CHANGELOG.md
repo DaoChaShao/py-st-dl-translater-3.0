@@ -118,6 +118,7 @@
 
 ### Docs
 
+- update CHANGELOG.md for version 0.1.0 with recent feature additions and improvements ([c61a82b](https://github.com///commit/c61a82b908c6a0dea92ea2b015294fea96d85c81))
 - update CHANGELOG.md to include recent feature additions ([22992fc](https://github.com///commit/22992fc8ad70cde9ef45dd0b360d2f4d9fae7ceb))
 - update CHANGELOG.md ([66f62b8](https://github.com///commit/66f62b8b5a1883222a1ad105b58b002a85378590))
 - update CHANGELOG.md for recent feature and refactoring additions ([c9cbcc2](https://github.com///commit/c9cbcc292ce75f870da16e5964fec83bdbf66201))
@@ -132,6 +133,7 @@
 
 ### Code Refactoring
 
+- improve model summary output formatting in base_ann.py ([af9bed7](https://github.com///commit/af9bed7257de56571526c275d3404ccf82270d1b))
 - update SeqEncoder to inherit from BaseANN instead of BaseRNN ([7378004](https://github.com///commit/73780045e0d56a9588e73251cc8c964cff81cb34))
 - add scale property to PositionEncoder for better access to scale factor ([ca9569c](https://github.com///commit/ca9569c7ec02dcbd2c6f2f7e603a0f7828a306dd))
 - rename BaseRNN to BaseANN in multi_task_rnn.py ([1043094](https://github.com///commit/1043094fb133d0a1f282f12aca6920c81a7cc8b7))

@@ -39,13 +39,14 @@ from .cfg_cnn import CONFIG4CNN, Configuration4CNN, CNNParams
 from .cfg_dl import CONFIG4DL, Config4DL, DataPreprocessor, Hyperparameters
 from .cfg_mlp import CONFIG4MLP, Configuration4MLP, MLPParams
 from .cfg_rnn import CONFIG4RNN, Configuration4RNN, RNNParams
-from .cfg_unet import CONFIG4UNET, Configuration4UNet, UNetParams
+from .cfg_seq2seq_transformer import CONFIG4S2STF
 from .cfg_types import (AttnHeads, AttnScorer,
                         Languages,
                         SeqMergeMethods, SeqNets, SeqStrategies,
                         Tasks,
                         Tokens,
                         SeqSeparator)
+from .cfg_unet import CONFIG4UNET, Configuration4UNet, UNetParams
 from .parser import set_argument_parser
 
 __all__ = [
@@ -59,7 +60,7 @@ __all__ = [
 
     "CONFIG4RNN", "Configuration4RNN", "RNNParams",
 
-    "CONFIG4UNET", "Configuration4UNet", "UNetParams",
+    "CONFIG4S2STF",
 
     "AttnHeads", "AttnScorer",
     "Languages",
@@ -67,6 +68,8 @@ __all__ = [
     "Tasks",
     "Tokens",
     "SeqSeparator",
+
+    "CONFIG4UNET", "Configuration4UNet", "UNetParams",
 
     "set_argument_parser"
 ]

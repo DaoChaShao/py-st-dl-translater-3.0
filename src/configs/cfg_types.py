@@ -38,16 +38,16 @@ class SeqMergeMethods(StrEnum):
 
 @unique
 class SeqNets(StrEnum):
-    RNN = "rnn"
-    LSTM = "lstm"
     GRU = "gru"
-    TRANSFORMER = "transformer"
+    LSTM = "lstm"
+    RNN = "rnn"
+    TF = "transformer"
 
 
 @unique
 class SeqStrategies(StrEnum):
     GREEDY = "greedy"
-    BEAM_SEARCH = "beam"
+    BEAM = "beam"
 
 
 @unique

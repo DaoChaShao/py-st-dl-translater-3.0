@@ -166,16 +166,16 @@ class TransformerSeqEncoder(nn.Module):
         print("*" * WIDTH)
         print(f"Model Summary for {self.__class__.__name__}")
         print("-" * WIDTH)
-        print(f"Vocabulary Size:      {self.vocab_size}")
-        print(f"Embedding Dimension:  {self.embedding_dims}")
-        print(f"Maximum Length:       {self.max_len}")
-        print(f"Scale size:           {self.scale}")
-        print(f"Attention Heads:      {self.num_heads}")
-        print(f"Feed-Forward Dim:     {self.feedforward_dims}")
-        print(f"Encoder Layers:       {self.num_layers}")
-        print(f"Dropout Rate:         {self._dropout_rate}")
-        print(f"Activation:           {self.activation}")
-        print(f"PAD Token ID:         {self._PAD}")
+        print(f"Vocabulary Size:          {self.vocab_size}")
+        print(f"Embedding Dimension:      {self.embedding_dims}")
+        print(f"Maximum Length:           {self.max_len}")
+        print(f"Scale size:               {self.scale}")
+        print(f"Attention Heads:          {self.num_heads}")
+        print(f"Feed-Forward Dim:         {self.feedforward_dims}")
+        print(f"Encoder Layers:           {self.num_layers}")
+        print(f"Dropout Rate:             {self._dropout_rate}")
+        print(f"Activation:               {self.activation}")
+        print(f"PAD Token ID:             {self._PAD}")
         print("-" * WIDTH)
         # Calculate parameters
         total_params, trainable_params = self._count_parameters()
@@ -183,6 +183,13 @@ class TransformerSeqEncoder(nn.Module):
         print(f"Trainable parameters:     {trainable_params:,}")
         print(f"Non-trainable parameters: {total_params - trainable_params:,}")
         print("*" * WIDTH)
+
+    @property
+    def encoder(self) -> nn.Module:
+        """ Get Transformer Encoder Module
+        :return: Transformer Encoder Module
+        """
+        return self._encoder
 
     @property
     def vocab_size(self) -> int:

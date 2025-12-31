@@ -1,10 +1,20 @@
 <!-- insertion marker -->
 <a name="0.1.0"></a>
 
-## [0.1.0](https://github.com///compare/462b4205a745640e923f99d879c1c1ff0fab89e9...0.1.0) (2025-12-29)
+## [0.1.0](https://github.com///compare/462b4205a745640e923f99d879c1c1ff0fab89e9...0.1.0) (2025-12-31)
 
 ### Features
 
+- enhance transformer_seq_encoder with detailed model summary and add encoder property ([9b6b250](https://github.com///commit/9b6b2504c19c74d74abfe717c9b0507de1df8920))
+- enhance model summary output and add decoder property in transformer_seq_decoder ([645585f](https://github.com///commit/645585fcf0b1f23aacb01b634544d13a230aaf72))
+- add SeqToSeqTransformerTrainer class for seq2seq transformer training ([5216bf2](https://github.com///commit/5216bf22b30976daee9b0a8797b53b56865ecf78))
+- refactor trainer to integrate seq2seq transformer model and update configurations ([2b1d508](https://github.com///commit/2b1d508c624cd294c0761942fe11a58c824087c5))
+- update seq2seq transformer model parameters and methods for improved functionality ([f08e69a](https://github.com///commit/f08e69ae5a953d29d706ee8c07811d23c7106f52))
+- reorder sequence network types and update naming conventions ([5cd5719](https://github.com///commit/5cd57190b0fd999524cf956c39d5d83c8011757e))
+- add configuration for sequence-to-sequence transformer ([84f6464](https://github.com///commit/84f64641ac64a6ba88b81f4bff46ea6c0cba9ed6))
+- rename EMBEDDING_DIM to EMBEDDING_DIMS in RNNParams ([01d80db](https://github.com///commit/01d80dbc03f55d8c705866ba1d143bbf57237459))
+- add TEMPERATURE parameter to configuration ([1151406](https://github.com///commit/1151406eb8483718248a54cdc03b6c774e95ead2))
+- reorganize imports and update __all__ to include CONFIG4S2STF ([46b047e](https://github.com///commit/46b047ead837df98fe99cbec0c73bd2651b2a94a))
 - add dictionary_en.json ([a99b735](https://github.com///commit/a99b7353c31d4152f4662e1c1d1b8287ab7b4933))
 - add dictionary_cn.json ([c8f7bde](https://github.com///commit/c8f7bdea146e5a9fe920027458fd45d16b9eb4b4))
 - add TransformerSeqEncoder class for Pytorch Transformer Encoder Network ([c1c1347](https://github.com///commit/c1c1347c3f7ce45c5be9f5774ea35d909834bd98))
@@ -99,6 +109,7 @@
 
 ### Bug Fixes
 
+- restore super() call in TorchTrainer4SeqToSeq initialization ([4d824cc](https://github.com///commit/4d824cca31cac8049b4a0f5ac0c7fa100a8f2a6a))
 - add missing newline at end of file ([1665047](https://github.com///commit/166504731f0f19fc1b2f9a4d6bcd1319f0da9651))
 
 ### Chore
@@ -107,6 +118,7 @@
 
 ### Docs
 
+- update CHANGELOG.md to include recent feature additions ([22992fc](https://github.com///commit/22992fc8ad70cde9ef45dd0b360d2f4d9fae7ceb))
 - update CHANGELOG.md ([66f62b8](https://github.com///commit/66f62b8b5a1883222a1ad105b58b002a85378590))
 - update CHANGELOG.md for recent feature and refactoring additions ([c9cbcc2](https://github.com///commit/c9cbcc292ce75f870da16e5964fec83bdbf66201))
 - update CHANGELOG.md to include recent chore and documentation updates ([f47d95d](https://github.com///commit/f47d95dbb4101a2e9aeeabd7cd5b5731608b4bd9))

@@ -11,9 +11,9 @@ from pathlib import Path
 from random import randint
 from torch import Tensor, no_grad
 
-from src.configs.cfg_rnn import CONFIG4RNN
+from src.configs.cfg_seq2seq_transformer import CONFIG4S2STF
 from src.configs.cfg_types import Languages, Tokens, SeqMergeMethods, SeqStrategies, AttnScorer
-from src.nets.seq2seq_attn_gru import SeqToSeqGRUWithAttn
+from src.nets.seq2seq_transformer import Seq2SeqTransformerNet
 from src.utils.helper import Timer
 from src.utils.highlighter import starts, lines, red, green, blue
 from src.utils.NLTK import bleu_score
@@ -28,7 +28,7 @@ def connect_db() -> list[tuple]:
     """ Connect to the Database and Return the Connection Object """
     table: str = "translater"
     cols: dict = {"en": str, "cn": str}
-    path: Path = Path(CONFIG4RNN.FILEPATHS.SQLITE)
+    path: Path = Path(CONFIG4S2STF.FILEPATHS.SQLITE)
 
     with SQLiteIII(table, cols, path) as db:
         data = db.fetch_all(col_names=[col for col in cols.keys()])
@@ -68,9 +68,9 @@ def main() -> None:
         # print(en_items[:3])
 
         # Load dictionary
-        dic_cn: Path = Path(CONFIG4RNN.FILEPATHS.DICTIONARY_CN)
+        dic_cn: Path = Path(CONFIG4S2STF.FILEPATHS.DICTIONARY_CN)
         dictionary_cn: dict = load_json(dic_cn) if dic_cn.exists() else print("Dictionary file not found.")
-        dic_en: Path = Path(CONFIG4RNN.FILEPATHS.DICTIONARY_EN)
+        dic_en: Path = Path(CONFIG4S2STF.FILEPATHS.DICTIONARY_EN)
         dictionary_en: dict = load_json(dic_en) if dic_en.exists() else print("Dictionary file not found.")
         reversed_dict: dict = {idx: word for word, idx in dictionary_en.items()}
         # print(reversed_dict)
@@ -91,30 +91,29 @@ def main() -> None:
         """
 
         # Load the save model parameters
-        params: Path = Path(CONFIG4RNN.FILEPATHS.NET_TRUE_GRU_WITH_ATTN_BAHDANAU_BEAM_CONCAT)
+        # params: Path = Path(CONFIG4S2STF.FILEPATHS.NET_GREEDY_100)
+        params: Path = Path(CONFIG4S2STF.FILEPATHS.NET_BEAM_5_100)
         if params.exists():
             print(f"Model {green(params.name)} Exists!")
 
             # Set up a model and load saved parameters
-            model = SeqToSeqGRUWithAttn(
+            model = Seq2SeqTransformerNet(
                 vocab_size_src=len(dictionary_cn),
                 vocab_size_tgt=len(dictionary_en),
-                embedding_dim=CONFIG4RNN.PARAMETERS.EMBEDDING_DIM,
-                hidden_size=CONFIG4RNN.PARAMETERS.HIDDEN_SIZE,
-                num_layers=CONFIG4RNN.PARAMETERS.LAYERS,
-                dropout_rate=CONFIG4RNN.PREPROCESSOR.DROPOUT_RATIO,
-                bidirectional=True,
-                accelerator=CONFIG4RNN.HYPERPARAMETERS.ACCELERATOR,
-                PAD_SRC=dictionary_cn[Tokens.PAD],
-                PAD_TGT=dictionary_en[Tokens.PAD],
+                embedding_dims=CONFIG4S2STF.PARAMETERS.EMBEDDING_DIMS,
+                scaler=CONFIG4S2STF.PARAMETERS.SCALER,
+                max_len=CONFIG4S2STF.PARAMETERS.MAX_LEN,
+                num_heads=CONFIG4S2STF.PARAMETERS.HEADS,
+                feedforward_dims=CONFIG4S2STF.PARAMETERS.FEEDFORWARD_DIMS,
+                num_layers=CONFIG4S2STF.PARAMETERS.LAYERS,
+                dropout=CONFIG4S2STF.PREPROCESSOR.DROPOUT_RATIO,
+                activation="relu",
+                accelerator=CONFIG4S2STF.HYPERPARAMETERS.ACCELERATOR,
+                PAD=dictionary_cn[Tokens.PAD],
                 SOS=dictionary_cn[Tokens.SOS],
                 EOS=dictionary_cn[Tokens.EOS],
-                merge_method=SeqMergeMethods.CONCAT,
-                teacher_forcing_ratio=0.5,
-                use_attention=True,
-                attn_scorer=AttnScorer.BAHDANAU
             )
-            model.load_model(params, strict=True)
+            model.load_params(params, strict=True)
             model.eval()
             print("Model Loaded Successfully!")
 
@@ -131,17 +130,27 @@ def main() -> None:
             # seq: list[int] = sequences[3280]
             # ----------------------------------------------------------------
             # Convert the token to a tensor
-            src: Tensor = item2tensor(seq, embedding=True, accelerator=CONFIG4RNN.HYPERPARAMETERS.ACCELERATOR)
+            src: Tensor = item2tensor(seq, embedding=True, accelerator=CONFIG4S2STF.HYPERPARAMETERS.ACCELERATOR)
             # Add batch size
             src = src.unsqueeze(0)
             # print(src.shape, src)
 
             # Prediction
             with no_grad():
-                strategy: str = params.name.split("-")[6]
-
-                out: Tensor = model.generate(src)
-                pred = [reversed_dict.get(idx, Tokens.UNK) for idx in out.squeeze().tolist()]
+                memory: Tensor = model.encoder(src)
+                memory_key_padding_mask: Tensor = (src == dictionary_cn[Tokens.PAD])
+                out = model.generate(
+                    memory,
+                    memory_key_padding_mask,
+                    top_k=CONFIG4S2STF.PARAMETERS.TOP_K,
+                    top_p=CONFIG4S2STF.PARAMETERS.TOP_P,
+                    temperature=CONFIG4S2STF.PREPROCESSOR.TEMPERATURE,
+                    beams=CONFIG4S2STF.PARAMETERS.BEAMS,
+                    early_stopper=CONFIG4S2STF.PARAMETERS.STOPPER,
+                    do_sample=CONFIG4S2STF.PARAMETERS.SAMPLER,
+                    length_penalty=CONFIG4S2STF.PARAMETERS.LEN_PENALTY_FACTOR
+                )
+                pred = [reversed_dict.get(idx, Tokens.UNK) for idx in out.squeeze().tolist()[1:]]
                 hypothesis: list[str] = [word.strip() for word in pred if word != Tokens.EOS]
                 # Get the relevant reference
                 # ----------------------------------------------------------------
@@ -152,7 +161,7 @@ def main() -> None:
 
                 bleu = bleu_score(reference, hypothesis)
                 starts()
-                print(f"Evaluation Results for {strategy} Model:")
+                print(f"Evaluation Results for Model:")
                 lines()
                 # ----------------------------------------------------------------
                 print(f"Selected Data Index for Prediction: {red(str(idx))}")
@@ -193,6 +202,15 @@ def main() -> None:
                 Reference (EN):                     ['do', 'you', 'cut', 'the', 'paper', '?']
                 Predation (EN):                     ['be', 'you', '<UNK>', 'on', 'the', '?']
                 BLEU Score:                         0.0495
+                ****************************************************************
+                ****************************************************************
+                Evaluation Results for beam Model of transformer:
+                ----------------------------------------------------------------
+                Selected Data Index for Prediction: 3280
+                Input Sentence (CN):                你裁切纸张了吗？
+                Reference (EN):                     ['do', 'you', 'cut', 'the', 'paper', '?']
+                Predation (EN):                     ['do', 'you', 'have', 'any', 'cough', 'medicine', '?']
+                BLEU Score:                         0.0907
                 ****************************************************************
                 """
         else:

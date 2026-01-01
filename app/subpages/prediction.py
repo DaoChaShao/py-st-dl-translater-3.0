@@ -11,12 +11,12 @@ from pathlib import Path
 from random import randint
 from streamlit import (empty, sidebar, subheader, session_state,
                        button, container, rerun, columns, caption,
-                       markdown, write, selectbox, data_editor, text_input, )
+                       markdown, write, selectbox, data_editor)
 from torch import load, device, Tensor, no_grad
 
-from src.configs.cfg_rnn import CONFIG4RNN
-from src.configs.cfg_types import Languages, Tokens, SeqNets, SeqStrategies, SeqMergeMethods, AttnScorer
-from src.nets.seq2seq_attn_gru import SeqToSeqGRUWithAttn
+from src.configs.cfg_seq2seq_transformer import CONFIG4S2STF
+from src.configs.cfg_types import Languages, Tokens, SeqNets, SeqStrategies
+from src.nets.seq2seq_transformer import Seq2SeqTransformerNet
 from src.utils.helper import Timer
 from src.utils.NLTK import bleu_score
 from src.utils.nlp import SpaCyBatchTokeniser, build_word2id_seqs
@@ -30,7 +30,7 @@ def connect_db() -> list[tuple]:
     """ Connect to the Database and Return the Connection Object """
     table: str = "translater"
     cols: dict = {"en": str, "cn": str}
-    path: Path = Path(CONFIG4RNN.FILEPATHS.SQLITE)
+    path: Path = Path(CONFIG4S2STF.FILEPATHS.SQLITE)
 
     with SQLiteIII(table, cols, path) as db:
         data = db.fetch_all(col_names=[col for col in cols.keys()])
@@ -82,7 +82,7 @@ dict4en, dict4cn = columns(2, gap="medium", vertical_alignment="center", width="
 session4init: list[str] = ["model", "cn4prove", "cn_items", "en_items", "timer4init"]
 for session in session4init:
     session_state.setdefault(session, None)
-session4pick: list[str] = ["src", "reference", "idx", "timer4pick"]
+session4pick: list[str] = ["src", "reference", "idx", "timer4pick", "memory", "mask"]
 for session in session4pick:
     session_state.setdefault(session, None)
 session4pred: list[str] = ["hypothesis", "timer4pred"]
@@ -93,11 +93,11 @@ with sidebar:
     subheader("Translater Settings")
 
     # Load model parameters
-    params4beam: Path = Path(CONFIG4RNN.FILEPATHS.NET_TRUE_GRU_WITH_ATTN_BAHDANAU_BEAM_CONCAT)
+    params4beam: Path = Path(CONFIG4S2STF.FILEPATHS.NET_BEAM_5_100)
     # Load dictionary
-    dic_cn: Path = Path(CONFIG4RNN.FILEPATHS.DICTIONARY_CN)
+    dic_cn: Path = Path(CONFIG4S2STF.FILEPATHS.DICTIONARY_CN)
     dictionary_cn: dict[str, int] = load_json(dic_cn) if dic_cn.exists() else print("Dictionary file not found.")
-    dic_en: Path = Path(CONFIG4RNN.FILEPATHS.DICTIONARY_EN)
+    dic_en: Path = Path(CONFIG4S2STF.FILEPATHS.DICTIONARY_EN)
     dictionary_en: dict[str, int] = load_json(dic_en) if dic_en.exists() else print("Dictionary file not found.")
     reversed_dict: dict[int, str] = {idx: word for word, idx in dictionary_en.items()}
     # print(reversed_dict)
@@ -108,7 +108,7 @@ with sidebar:
             # Set model selection
             model: str = selectbox(
                 "Select a Model",
-                options=[SeqNets.RNN, SeqNets.LSTM, SeqNets.GRU], index=2,
+                options=[SeqNets.GRU, SeqNets.LSTM, SeqNets.RNN, SeqNets.TF], index=3,
                 disabled=True,
                 width="stretch"
             )
@@ -116,7 +116,7 @@ with sidebar:
             # Set strategy selection
             selection: str = selectbox(
                 "Select a Strategy to translate",
-                options=[SeqStrategies.GREEDY, SeqStrategies.BEAM_SEARCH], index=1,
+                options=[SeqStrategies.GREEDY, SeqStrategies.BEAM], index=1,
                 disabled=True,
                 width="stretch"
             )
@@ -125,25 +125,23 @@ with sidebar:
             if button("Initialise Model & Dictionary & Data", type="primary", width="stretch"):
                 with Timer("Initialisation") as session_state["timer4init"]:
                     # Initialise a model and load saved parameters
-                    session_state["model"] = SeqToSeqGRUWithAttn(
+                    session_state["model"] = Seq2SeqTransformerNet(
                         vocab_size_src=len(dictionary_cn),
                         vocab_size_tgt=len(dictionary_en),
-                        embedding_dim=CONFIG4RNN.PARAMETERS.EMBEDDING_DIM,
-                        hidden_size=CONFIG4RNN.PARAMETERS.HIDDEN_SIZE,
-                        num_layers=CONFIG4RNN.PARAMETERS.LAYERS,
-                        dropout_rate=CONFIG4RNN.PREPROCESSOR.DROPOUT_RATIO,
-                        bidirectional=True,
-                        accelerator=CONFIG4RNN.HYPERPARAMETERS.ACCELERATOR,
-                        PAD_SRC=dictionary_cn[Tokens.PAD],
-                        PAD_TGT=dictionary_en[Tokens.PAD],
+                        embedding_dims=CONFIG4S2STF.PARAMETERS.EMBEDDING_DIMS,
+                        scaler=CONFIG4S2STF.PARAMETERS.SCALER,
+                        max_len=CONFIG4S2STF.PARAMETERS.MAX_LEN,
+                        num_heads=CONFIG4S2STF.PARAMETERS.HEADS,
+                        feedforward_dims=CONFIG4S2STF.PARAMETERS.FEEDFORWARD_DIMS,
+                        num_layers=CONFIG4S2STF.PARAMETERS.LAYERS,
+                        dropout=CONFIG4S2STF.PREPROCESSOR.DROPOUT_RATIO,
+                        activation="relu",
+                        accelerator=CONFIG4S2STF.HYPERPARAMETERS.ACCELERATOR,
+                        PAD=dictionary_cn[Tokens.PAD],
                         SOS=dictionary_cn[Tokens.SOS],
                         EOS=dictionary_cn[Tokens.EOS],
-                        merge_method=SeqMergeMethods.CONCAT,
-                        teacher_forcing_ratio=0.5,
-                        use_attention=True,
-                        attn_scorer=AttnScorer.BAHDANAU
                     )
-                    dict_state: dict = load(params4beam, map_location=device(CONFIG4RNN.HYPERPARAMETERS.ACCELERATOR))
+                    dict_state: dict = load(params4beam, map_location=device(CONFIG4S2STF.HYPERPARAMETERS.ACCELERATOR))
                     session_state["model"].load_state_dict(dict_state)
                     session_state["model"].eval()
                     print("Model Loaded Successfully!")
@@ -209,7 +207,7 @@ with sidebar:
 
                         # Convert the token to a tensor
                         src: Tensor = item2tensor(
-                            seq, embedding=True, accelerator=CONFIG4RNN.HYPERPARAMETERS.ACCELERATOR
+                            seq, embedding=True, accelerator=CONFIG4S2STF.HYPERPARAMETERS.ACCELERATOR
                         )
                         # Add batch size
                         session_state["src"] = src.unsqueeze(0)
@@ -217,6 +215,10 @@ with sidebar:
                         # Get the relevant label
                         session_state["reference"]: list[str] = session_state["en_items"][session_state["idx"]]
                         # print(session_state["reference"])
+
+                        session_state["memory"]: Tensor = session_state["model"].encoder(session_state["src"])
+                        session_state["mask"] = (session_state["src"] == dictionary_cn[Tokens.PAD])
+
                         rerun()
 
                 if button("Reselect Model & Strategy", type="secondary", width="stretch"):
@@ -244,8 +246,18 @@ with sidebar:
                         with Timer("Predict") as session_state["timer4pred"]:
                             session_state["model"].eval()
                             with no_grad():
-                                out: Tensor = session_state["model"].generate(session_state["src"])
-                                pred = [reversed_dict.get(idx, Tokens.UNK) for idx in out.squeeze().tolist()]
+                                out: Tensor = session_state["model"].generate(
+                                    session_state["memory"],
+                                    session_state["mask"],
+                                    top_k=CONFIG4S2STF.PARAMETERS.TOP_K,
+                                    top_p=CONFIG4S2STF.PARAMETERS.TOP_P,
+                                    temperature=CONFIG4S2STF.PREPROCESSOR.TEMPERATURE,
+                                    beams=CONFIG4S2STF.PARAMETERS.BEAMS,
+                                    early_stopper=CONFIG4S2STF.PARAMETERS.STOPPER,
+                                    do_sample=CONFIG4S2STF.PARAMETERS.SAMPLER,
+                                    length_penalty=CONFIG4S2STF.PARAMETERS.LEN_PENALTY_FACTOR
+                                )
+                                pred = [reversed_dict.get(idx, Tokens.UNK) for idx in out.squeeze().tolist()[1:]]
                                 session_state["hypothesis"]: list[str] = [
                                     word.strip() for word in pred if word != Tokens.EOS
                                 ]

@@ -1,10 +1,27 @@
 <!-- insertion marker -->
 <a name="0.1.0"></a>
 
-## [0.1.0](https://github.com///compare/462b4205a745640e923f99d879c1c1ff0fab89e9...0.1.0) (2025-12-31)
+## [0.1.0](https://github.com///compare/462b4205a745640e923f99d879c1c1ff0fab89e9...0.1.0) (2026-01-01)
 
 ### Features
 
+- add home page for interactive machine translation evaluation system ([ebfccb5](https://github.com///commit/ebfccb5947e49329e5f0949211bcff0df9547f78))
+- add model-transformer-greedy-100.pth ([d8de43c](https://github.com///commit/d8de43c5ca319971e9f873f1d836bb97aa4367bb))
+- add model-transformer-beam5-100.pth ([23fbfcb](https://github.com///commit/23fbfcb2fe20f18407d522479897a0432887ab65))
+- add layout and prediction pages for RNN translator application ([e08dafe](https://github.com///commit/e08dafe8b757eed999bc80f6c3b77f854af27137))
+- increase default training epochs from 100 to 200 in argument parser ([2fc9b42](https://github.com///commit/2fc9b425495d29cff4572cae882c57d29c982096))
+- update predictor to use Seq2SeqTransformerNet and adjust configuration paths ([ce5d8f7](https://github.com///commit/ce5d8f794ffe0f994924b9a76e7e8124c434635c))
+- add model parameter saving and loading methods to Seq2SeqTransformer ([00e9c66](https://github.com///commit/00e9c663db888f1f07aea133ae3bdf079c4565bd))
+- add training log for transformer model using greedy strategy with epoch metrics ([fe6ebe7](https://github.com///commit/fe6ebe7aa0a1870652a8d5fb10ed0973a78219af))
+- add training log for transformer model with detailed epoch metrics ([0da68f4](https://github.com///commit/0da68f4a45eba0e934586b97511e2c498035d221))
+- update training summary to include additional epoch and strategy details ([ac41337](https://github.com///commit/ac41337b110ab55c9740f0b5728ebecf5d5297eb))
+- refactor evaluator to use Seq2SeqTransformerNet and update configuration paths ([4576029](https://github.com///commit/45760293772f2cb2673d524d415814d64387a6ae))
+- update beam search parameter in TransformerParams to improve performance ([00b11ef](https://github.com///commit/00b11ef9842792fa5ea64f47cd64b79d0182a1e9))
+- add paths for transformer model files in configuration ([0e1be12](https://github.com///commit/0e1be12235e1e63db5f5a079a0dd8601e983c06e))
+- add __init__.py for Next Word Prediction application package structure ([e7b1512](https://github.com///commit/e7b15120e7f3d4fb2e5460fb1e75c7153c5233e4))
+- create __init__.py to initialize package structure ([85f15c5](https://github.com///commit/85f15c551d639132023e896f6618c6b71af4e8a8))
+- add __init__.py for multi-page structure in Next Word Prediction app ([b6cc447](https://github.com///commit/b6cc4476a0933d4eafa224d9292da2b02dba74bf))
+- add TransformerSeqEncoder and TransformerSeqDecoder to module exports ([838c946](https://github.com///commit/838c946d04013ffa91e2fc17fd3ab440a6bf9c10))
 - enhance transformer_seq_encoder with detailed model summary and add encoder property ([9b6b250](https://github.com///commit/9b6b2504c19c74d74abfe717c9b0507de1df8920))
 - enhance model summary output and add decoder property in transformer_seq_decoder ([645585f](https://github.com///commit/645585fcf0b1f23aacb01b634544d13a230aaf72))
 - add SeqToSeqTransformerTrainer class for seq2seq transformer training ([5216bf2](https://github.com///commit/5216bf22b30976daee9b0a8797b53b56865ecf78))
@@ -109,16 +126,21 @@
 
 ### Bug Fixes
 
+- update beam_width parameter type to support multiple values ([d9c0abd](https://github.com///commit/d9c0abdd082041d620ec8348a5233d17ee62cf45))
+- remove unused SeqMergeMethods import from cfg_types in trainer.py ([6848908](https://github.com///commit/6848908f923f2df130e612f09f10eb515d9b4acb))
+- update import paths for TransformerSeqEncoder and TransformerSeqDecoder; enhance BEAMS parameter type ([d63a744](https://github.com///commit/d63a744c4ae4ec0fb04cec6253252a1e558235b4))
+- update BEAMS parameter in TransformerParams to improve performance ([7035167](https://github.com///commit/7035167d416ce99c5b22acd12dcc6498d1d31dbe))
 - restore super() call in TorchTrainer4SeqToSeq initialization ([4d824cc](https://github.com///commit/4d824cca31cac8049b4a0f5ac0c7fa100a8f2a6a))
 - add missing newline at end of file ([1665047](https://github.com///commit/166504731f0f19fc1b2f9a4d6bcd1319f0da9651))
 
 ### Chore
 
+- add .gitignore to exclude Python-generated files and IDE-specific directories ([de62e64](https://github.com///commit/de62e64fbf8c48ab1acd513c1f03bcaf3e52dab6))
 - delete unnecessary modules ([8a260e6](https://github.com///commit/8a260e6aac2629395e043d83193e035d750764a2))
 
 ### Docs
 
-- update CHANGELOG.md for version 0.1.0 with recent feature additions and improvements ([c61a82b](https://github.com///commit/c61a82b908c6a0dea92ea2b015294fea96d85c81))
+- update CHANGELOG.md for version 0.1.0 with recent feature additions and improvements ([9dfd15b](https://github.com///commit/9dfd15ba92bfb91bf2949ce9dde164ccbae5ae3d))
 - update CHANGELOG.md to include recent feature additions ([22992fc](https://github.com///commit/22992fc8ad70cde9ef45dd0b360d2f4d9fae7ceb))
 - update CHANGELOG.md ([66f62b8](https://github.com///commit/66f62b8b5a1883222a1ad105b58b002a85378590))
 - update CHANGELOG.md for recent feature and refactoring additions ([c9cbcc2](https://github.com///commit/c9cbcc292ce75f870da16e5964fec83bdbf66201))
@@ -133,6 +155,8 @@
 
 ### Code Refactoring
 
+- rename transformer_seq_encoder.py to seq_encoder4transformer.py and update file header ([35a5ac1](https://github.com///commit/35a5ac17683de2a9f9138b71ec9449f5d2c6a724))
+- rename transformer_seq_decoder.py to seq_decoder4transformer.py and update import paths ([e207848](https://github.com///commit/e207848d26beab54807885bbac15ca6037eac071))
 - improve model summary output formatting in base_ann.py ([af9bed7](https://github.com///commit/af9bed7257de56571526c275d3404ccf82270d1b))
 - update SeqEncoder to inherit from BaseANN instead of BaseRNN ([7378004](https://github.com///commit/73780045e0d56a9588e73251cc8c964cff81cb34))
 - add scale property to PositionEncoder for better access to scale factor ([ca9569c](https://github.com///commit/ca9569c7ec02dcbd2c6f2f7e603a0f7828a306dd))

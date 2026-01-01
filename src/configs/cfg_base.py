@@ -22,6 +22,8 @@ class FilePaths:
     DICTIONARY_CN: Path = BASE_DIR / "data/dictionary_cn.json"
     DICTIONARY_EN: Path = BASE_DIR / "data/dictionary_en.json"
     LOGS: Path = BASE_DIR / "logs/"
+    NET_GREEDY_100: Path = BASE_DIR / "models/model-transformer-greedy-100.pth"
+    NET_BEAM_5_100: Path = BASE_DIR / "models/model-transformer-beam5-100.pth"
     SAVED_NET: Path = BASE_DIR / "models/model.pth"
     SPACY_MODEL_EN: Path = BASE_DIR / "models/spacy/en_core_web_md"
     SPACY_MODEL_CN: Path = BASE_DIR / "models/spacy/zh_core_web_md"

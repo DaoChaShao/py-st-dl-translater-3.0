@@ -14,7 +14,7 @@ def set_argument_parser():
     # Set up argument parser
     parser = ArgumentParser()
     parser.add_argument("-a", "--alpha", type=float, default=1e-4, help="Learning rate")
-    parser.add_argument("-e", "--epochs", type=int, default=100, help="Number of training times")
+    parser.add_argument("-e", "--epochs", type=int, default=200, help="Number of training times")
     args = parser.parse_args()
     """
     Display hyperparameters You need to set before training using command lines:

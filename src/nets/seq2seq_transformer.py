@@ -6,7 +6,8 @@
 # @File     :   seq2seq_transformer.py
 # @Desc     :   
 
-from torch import (nn, Tensor,
+from pathlib import Path
+from torch import (nn, Tensor, save, load,
                    no_grad, device, full, long, zeros, bool as torch_bool,
                    cat, topk, sort, cumsum, zeros_like, stack,
                    tensor,
@@ -216,7 +217,7 @@ class Seq2SeqTransformerNet(nn.Module):
                 cum_probs = cumsum(probs, dim=-1)
 
                 mask = cum_probs > top_p
-                mask[..., 1:] = mask[..., :-1]
+                mask[..., 1:] = mask[..., :-1].clone()
                 mask[..., 0] = False
 
                 for b in range(batches):
@@ -343,6 +344,23 @@ class Seq2SeqTransformerNet(nn.Module):
         final_seq = stack([beam_sequence[b, best[b]] for b in range(B)])
 
         return final_seq, beam_scores.max(dim=-1).values
+
+    @final
+    def save_params(self, path: str | Path) -> None:
+        """ Save the model - all networks share the same method
+        :param path: path to save the model
+        """
+        save(self.state_dict(), path)
+        print("The model has been saved successfully.")
+
+    @final
+    def load_params(self, path: str | Path, strict: bool = False) -> None:
+        """ Load the model - all networks share the same method
+        :param path: path to load the model from
+        :param strict: whether to strictly enforce that the keys in state_dict match the keys returned by this module's state_dict function
+        """
+        self.load_state_dict(load(path, map_location=device(self._accelerator)), strict=strict)
+        print("The model has been loaded successfully.")
 
     @final
     def _count_parameters(self) -> tuple[int, int]:

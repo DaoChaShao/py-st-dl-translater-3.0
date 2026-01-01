@@ -5,6 +5,9 @@
 
 ### Features
 
+- refactor prediction module to integrate Seq2Seq Transformer model and update configurations ([0785c2b](https://github.com///commit/0785c2b81ec8165c50499b733d4143726efb023f))
+- implement main function to configure and set up pages ([affb3e6](https://github.com///commit/affb3e630371dee5a4b8823e8cab65ebb4648788))
+- update home page to reflect Transformer architecture and enhancements ([5812269](https://github.com///commit/5812269ce4f3005c13563848191c0e7f2f4e46cf))
 - add home page for interactive machine translation evaluation system ([ebfccb5](https://github.com///commit/ebfccb5947e49329e5f0949211bcff0df9547f78))
 - add model-transformer-greedy-100.pth ([d8de43c](https://github.com///commit/d8de43c5ca319971e9f873f1d836bb97aa4367bb))
 - add model-transformer-beam5-100.pth ([23fbfcb](https://github.com///commit/23fbfcb2fe20f18407d522479897a0432887ab65))
@@ -135,6 +138,7 @@
 
 ### Chore
 
+- update CHANGELOG.md for version 0.1.0 with recent feature additions and improvements ([cb99ed6](https://github.com///commit/cb99ed632df50dbc1066d71bdc1ecd9115524c34))
 - add .gitignore to exclude Python-generated files and IDE-specific directories ([de62e64](https://github.com///commit/de62e64fbf8c48ab1acd513c1f03bcaf3e52dab6))
 - delete unnecessary modules ([8a260e6](https://github.com///commit/8a260e6aac2629395e043d83193e035d750764a2))
 
